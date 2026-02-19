@@ -3,6 +3,8 @@ import pandas as pd
 import math
 from pathlib import Path
 
+FILE_ID = "1LC_UduTk_dcT7vgCoURbIiFXbmTt"
+
 # Set the title and favicon that appear in the Browser's tab bar.
 st.set_page_config(
     page_title='StcokInfochecker',
@@ -61,7 +63,7 @@ def get_gdp_data():
 # =========================================================
 # GoogleDocumentからCSV取得
 # =========================================================
-def get_gd_data():
+def get_gd_data(file_id):
     FILE_ID = "1LC_UduTk_dcT7vgCoURbIiFXbmTt"
     url = f"https://drive.google.com/uc?id={file_id}&export=download"
 
@@ -174,7 +176,7 @@ st.title("StockChecker")
 
 try:
     # データの読み込み
-    df = get_gd_data()
+    df = get_gd_data(FILE_ID)
 
     # データの表示
     st.subheader("読み込んだデータ一覧")
