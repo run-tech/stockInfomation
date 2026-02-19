@@ -92,7 +92,22 @@ try:
         # --- 結果の表示 ---
         st.divider()
         st.write(f"📊 該当件数: {len(filtered_df)}件 / 全{len(df_stcok_list)}件")
-        st.dataframe(filtered_df[selected_columns], use_container_width=True)
+        #st.dataframe(filtered_df[selected_columns], use_container_width=True)
+        # スタイル設定
+        config = {
+            col: st.column_config.NumberColumn(format="%d")
+            for col in filtered_df.columns if pd.api.types.is_numeric_dtype(filtered_df[col])
+        }
+        def color_negative_red(val):
+            if isinstance(val, (int, float)) and val < 0:
+                return 'color: red'
+        return ''
+
+        styled_df = filtered_df[selected_columns].style.applymap(color_negative_red).format(
+            {col: "{:,}" for col in filtered_df.columns if pd.api.types.is_numeric_dtype(filtered_df[col])}
+        )
+
+        st.dataframe(styled_df, use_container_width=True)
 
     else:
         st.info("表示する列を少なくとも1つ選択してください。")
