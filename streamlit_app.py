@@ -120,29 +120,3 @@ except Exception as e:
     st.info("エラー詳細: " + str(e))
 
 ''
-
-st.header(f"出来高TOP100", divider="gray")
-try:
-    # データの読み込み
-    df_dekidaka = get_gd_file(FILE_BAIBAIDAIKIN)
-
-    # データの表示
-    st.dataframe(df_dekidaka) # インタラクティブな表として表示
-
-except Exception as e:
-    st.error(f"データの読み込みに失敗しました。URLや共有設定を確認してください。")
-    st.info("エラー詳細: " + str(e))
-
-''
-
-st.header(f"売買代金TOP100", divider="gray")
-try:
-    # データの読み込み
-    df_baibaidaikin = get_gd_file(FILE_DEKIDAKA)
-
-    # データの表示
-    st.dataframe(df_baibaidaikin) # インタラクティブな表として表示
-
-except Exception as e:
-    st.error(f"データの読み込みに失敗しました。URLや共有設定を確認してください。")
-    st.info("エラー詳細: " + str(e))
