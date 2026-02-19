@@ -28,7 +28,7 @@ def get_gd_file(file_id):
             dt = datetime.strptime(last_modified_str, '%a, %d %b %Y %H:%M:%S %Z')
             # 日本時間に変換
             dt_jst = dt.replace(tzinfo=pytz.utc).astimezone(pytz.timezone('Asia/Tokyo'))
-            last_updated = dt_jst.strftime('%Y/%m/%d %H:%M:%S')
+            last_updated = dt_jst.strftime('%Y/%m/%d %H:%M')
         else:
             # ヘッダーから取れない場合は、現在の取得時刻を表示するなどの代用
             last_updated = "日時取得不可（直近の読み込み時刻: " + datetime.now(pytz.timezone('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M') + ")"
