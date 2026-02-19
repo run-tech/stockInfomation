@@ -50,7 +50,7 @@ try:
     default_cols = ["銘柄コード", "銘柄名", "現在値", "前日比", "前日比率", "出来高", "売買代金", "出来高加重平均", "時価総額", "PER", "PBR", "配当", "配当利率"]
 
     # 実際にCSVに含まれている列だけを抽出（エラー防止のため）
-    available_default_cols = [c for c in default_cols if c in df.columns]
+    available_default_cols = [c for c in default_cols if c in df_stcok_list.columns]
     
     # 列洗濯用プルダウンリスト
     selected_columns = st.multiselect(
