@@ -5,8 +5,8 @@ from pathlib import Path
 
 # Set the title and favicon that appear in the Browser's tab bar.
 st.set_page_config(
-    page_title='GDP dashboard',
-    page_icon=':earth_americas:', # This is an emoji shortcode. Could be a URL too.
+    page_title='StcokInfochecker',
+    page_icon=':chart:', # This is an emoji shortcode. Could be a URL too.
 )
 
 # -----------------------------------------------------------------------------
@@ -57,6 +57,14 @@ def get_gdp_data():
 
     return gdp_df
 
+
+# =========================================================
+# GoogleDocumentからCSV取得
+# =========================================================
+def get_gd_data():
+    url = f"https://drive.google.com/file/d/12K-1LC_UduTk_dcT7vgCoURbIiFXbmTt/view?usp=drive_link"
+    return url
+
 gdp_df = get_gdp_data()
 
 # -----------------------------------------------------------------------------
@@ -64,7 +72,7 @@ gdp_df = get_gdp_data()
 
 # Set the title that appears at the top of the page.
 '''
-# :earth_americas: GDP dashboard sss
+# :earth_americas: GDP dashboard
 
 Browse GDP data from the [World Bank Open Data](https://data.worldbank.org/) website. As you'll
 notice, the data only goes to 2022 right now, and datapoints for certain years are often missing.
@@ -149,3 +157,23 @@ for i, country in enumerate(selected_countries):
             delta=growth,
             delta_color=delta_color
         )
+
+# UI
+st.title("StockChecker")
+
+try:
+    # データの読み込み
+    df = get_gd_data()
+
+    # データの表示
+    st.subheader("読み込んだデータ一覧")
+    st.dataframe(df) # インタラクティブな表として表示
+
+    # 簡易的な統計情報の表示（オプション）
+    if st.checkbox("統計情報を表示"):
+        st.write(df.describe())
+
+except Exception as e:
+    st.error(f"データの読み込みに失敗しました。URLや共有設定を確認してください。")
+    st.info("エラー詳細: " + str(e))
+
