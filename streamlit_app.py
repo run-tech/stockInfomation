@@ -31,7 +31,7 @@ def get_gd_file(file_id):
             last_updated = dt_jst.strftime('%Y/%m/%d %H:%M:%S')
         else:
             # ヘッダーから取れない場合は、現在の取得時刻を表示するなどの代用
-            last_updated = "日時取得不可（直近の読み込み時刻: " + datetime.now(pytz.timezone('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S') + ")"
+            last_updated = "日時取得不可（直近の読み込み時刻: " + datetime.now(pytz.timezone('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M') + ")"
             
         # 文字コードが不明な場合は utf-8 や shift_jis を試してください
         csv_data = StringIO(response.text)
