@@ -5,13 +5,10 @@ from io import StringIO
 import math
 from pathlib import Path
 
-FILE_ID = "12K-1LC_UduTk_dcT7vgCoURbIiFXbmTt" # https://drive.google.com/file/d/12K-1LC_UduTk_dcT7vgCoURbIiFXbmTt/view?usp=drive_link
+FILE_STOCK_LIST = "1nk01bicZkwvGbGTvNWYYMq4A-4dpUIbr" # 全銘柄一覧
+FILE_BAIBAIDAIKIN = "1XA33JiyavO8lyNNrg2NHlsJ0EJBJeOnm" # 売買代金TOP
+FILE_DEKIDAKA = "18OKlrHR1SvhgQD2RdY76wmpu8P4nUZt2" # 出来高TOP
 
-# Set the title and favicon that appear in the Browser's tab bar.
-st.set_page_config(
-    page_title='StcokInfochecker',
-    page_icon=':chart:', # This is an emoji shortcode. Could be a URL too.
-)
 
 # -----------------------------------------------------------------------------
 # Declare some useful functions.
@@ -63,10 +60,10 @@ def get_gdp_data():
 
 
 # =========================================================
-# GoogleDocumentからCSV取得
+# GoogleDocumentからファイル取得
 # =========================================================
-def get_gd_data(file_id):
-    
+def get_gd_file(file_id):
+    # 指定したGoogleDocumentのファイルをダウンロード
     url = f"https://drive.google.com/uc?id={file_id}&export=download"
     # データを取得
     response = requests.get(url)
@@ -172,22 +169,57 @@ for i, country in enumerate(selected_countries):
             delta_color=delta_color
         )
 
-# UI
-st.title("StockChecker")
+# =========================================================
+# GUI　ブラウザタイトル
+# =========================================================
+st.set_page_config(
+    page_title='StcokInfochecker',
+    page_icon=':chart:', # This is an emoji shortcode. Could be a URL too.
+)
 
+# =========================================================
+# GUI メイン画面
+# =========================================================
+st.title(":chart: StockChecker")
+
+st.header(f"銘柄一覧", divider="gray")
 try:
     # データの読み込み
-    df = get_gd_data(FILE_ID)
+    df = get_gd_file(FILE_STOCK_LIST)
 
     # データの表示
-    st.subheader("読み込んだデータ一覧")
     st.dataframe(df) # インタラクティブな表として表示
-
-    # 簡易的な統計情報の表示（オプション）
-    if st.checkbox("統計情報を表示"):
-        st.write(df.describe())
 
 except Exception as e:
     st.error(f"データの読み込みに失敗しました。URLや共有設定を確認してください。")
     st.info("エラー詳細: " + str(e))
+
+''
+
+st.header(f"出来高TOP100", divider="gray")
+try:
+    # データの読み込み
+    df = get_gd_file(FILE_BAIBAIDAIKIN)
+
+    # データの表示
+    st.dataframe(df) # インタラクティブな表として表示
+
+except Exception as e:
+    st.error(f"データの読み込みに失敗しました。URLや共有設定を確認してください。")
+    st.info("エラー詳細: " + str(e))
+
+''
+
+st.header(f"売買代金TOP100", divider="gray")
+try:
+    # データの読み込み
+    df = get_gd_file(FILE_DEKIDAKA)
+
+    # データの表示
+    st.dataframe(df) # インタラクティブな表として表示
+
+except Exception as e:
+    st.error(f"データの読み込みに失敗しました。URLや共有設定を確認してください。")
+    st.info("エラー詳細: " + str(e))
+
 
