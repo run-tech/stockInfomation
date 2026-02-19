@@ -2,8 +2,8 @@ import streamlit as st
 import pandas as pd
 import requests
 from io import StringIO
-import math
-from pathlib import Path
+from datetime import datetime
+import pytz
 
 FILE_STOCK_LIST = "1nk01bicZkwvGbGTvNWYYMq4A-4dpUIbr" # 全銘柄一覧
 FILE_BAIBAIDAIKIN = "1XA33JiyavO8lyNNrg2NHlsJ0EJBJeOnm" # 売買代金TOP
@@ -20,9 +20,23 @@ def get_gd_file(file_id):
     
     # レスポンスが正常か確認
     if response.status_code == 200:
+        # HTTPヘッダーから日時を取得
+        last_modified_str = response.headers.get('Last-Modified')
+        
+        if last_modified_str:
+            # 文字列を日時に変換
+            dt = datetime.strptime(last_modified_str, '%a, %d %b %Y %H:%M:%S %Z')
+            # 日本時間に変換
+            dt_jst = dt.replace(tzinfo=pytz.utc).astimezone(pytz.timezone('Asia/Tokyo'))
+            last_updated = dt_jst.strftime('%Y/%m/%d %H:%M:%S')
+        else:
+            # ヘッダーから取れない場合は、現在の取得時刻を表示するなどの代用
+            last_updated = "日時取得不可（直近の読み込み時刻: " + datetime.now(pytz.timezone('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S') + ")"
+            
         # 文字コードが不明な場合は utf-8 や shift_jis を試してください
         csv_data = StringIO(response.text)
-        return pd.read_csv(csv_data)
+        df = pd.read_csv(csv_data)
+        return df, last_updated
     else:
         raise Exception(f"ファイルの取得に失敗しました。ステータスコード: {response.status_code}")
 
@@ -50,7 +64,9 @@ st.title(":chart: StockChecker")
 st.header(f"銘柄一覧", divider="gray")
 try:
     # データの読み込み
-    df_stcok_list = get_gd_file(FILE_STOCK_LIST)
+    df_stcok_list, last_updated = get_gd_file(FILE_STOCK_LIST)
+    st.caption(f"最終データ更新日時: {last_updated}")
+    
     # 全ての列名を取得
     all_columns = df_stcok_list.columns.tolist()
     
