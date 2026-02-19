@@ -67,7 +67,7 @@ try:
     st.divider() # 区切り線
     target_col = "現在値" # 絞り込みたい列名
 
-    if target_col in df.columns:
+    if target_col in df_stcok_list.columns:
         # データの型を数値に変換（エラーや空文字を考慮）
         df_stcok_list[target_col] = pd.to_numeric(df_stcok_list[target_col], errors="coerce")
         
@@ -79,9 +79,9 @@ try:
             end_range = st.number_input(f"{target_col} の最大値", value=5000.0)
 
         # データのフィルタリング
-        filtered_df = df[
-            (df[target_col] >= start_range) & 
-            (df[target_col] <= end_range)
+        filtered_df = df_stcok_list[
+            (df_stcok_list[target_col] >= start_range) & 
+            (df_stcok_list[target_col] <= end_range)
         ]
         
         # 表示する列だけを抽出
