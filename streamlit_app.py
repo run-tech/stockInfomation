@@ -62,8 +62,19 @@ def get_gdp_data():
 # GoogleDocumentからCSV取得
 # =========================================================
 def get_gd_data():
-    url = f"https://drive.google.com/file/d/12K-1LC_UduTk_dcT7vgCoURbIiFXbmTt/view?usp=drive_link"
-    return url
+    FILE_ID = "1LC_UduTk_dcT7vgCoURbIiFXbmTt"
+    url = f"https://drive.google.com/uc?id={file_id}&export=download"
+
+    # データを取得
+    response = requests.get(url)
+    
+    # レスポンスが正常か確認
+    if response.status_code == 200:
+        # 文字コードが不明な場合は utf-8 や shift_jis を試してください
+        csv_data = StringIO(response.text)
+        return pd.read_csv(csv_data)
+    else:
+        raise Exception(f"ファイルの取得に失敗しました。ステータスコード: {response.status_code}")
 
 gdp_df = get_gdp_data()
 
