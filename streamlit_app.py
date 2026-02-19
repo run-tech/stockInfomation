@@ -27,6 +27,14 @@ def get_gd_file(file_id):
         raise Exception(f"ファイルの取得に失敗しました。ステータスコード: {response.status_code}")
 
 # =========================================================
+# スタイル設定(赤文字表示)
+# =========================================================
+def color_negative_red(val):
+    if isinstance(val, (int, float)) and val < 0:
+        return 'color: red'
+    return ''
+
+# =========================================================
 # GUI　ブラウザタイトル
 # =========================================================
 st.set_page_config(
@@ -98,11 +106,6 @@ try:
             col: st.column_config.NumberColumn(format="%d")
             for col in filtered_df.columns if pd.api.types.is_numeric_dtype(filtered_df[col])
         }
-        def color_negative_red(val):
-            if isinstance(val, (int, float)) and val < 0:
-                return 'color: red'
-        return ''
-
         styled_df = filtered_df[selected_columns].style.applymap(color_negative_red).format(
             {col: "{:,}" for col in filtered_df.columns if pd.api.types.is_numeric_dtype(filtered_df[col])}
         )
