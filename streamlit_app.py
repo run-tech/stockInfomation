@@ -57,19 +57,19 @@ try:
         options=all_columns,
         default=available_default_cols
     )
-    # 選択された列がある場合のみ表示
-#    if selected_columns:
-#        filtered_df = df_stcok_list[selected_columns]
-#        st.dataframe(filtered_df, use_container_width=True)
-#    else:
-#        st.warning("表示する列を1つ以上選択してください。")
 
-    st.divider() # 区切り線
-    st.subheader("２．絞り込み条件の設定")
     # 絞り込みの対象にする列を選択
-    filter_col = st.selectbox("絞り込みたい列を選択してください", all_columns)
-    filtered_df = df_stcok_list.copy()
-    # --- 列の型に応じた動的なUI生成 ---
+    if selected_columns:
+        st.divider()
+        st.subheader("２．絞り込み条件の設定")
+        
+        # 絞り込みの対象にする列を選択
+        filter_col = st.selectbox("絞り込みたい列を選択してください", selected_columns)
+        
+        # フィルタリング前の準備
+        filtered_df = df_stcok_list.copy()
+
+        # --- 列の型に応じた動的なUI生成 ---
         # 数値列の場合
         if pd.api.types.is_numeric_dtype(df_stcok_list[filter_col]):
             col1, col2 = st.columns(2)
@@ -98,7 +98,7 @@ try:
 
     else:
         st.info("表示する列を少なくとも1つ選択してください。")
-
+        
 except Exception as e:
     st.error(f"データの読み込みに失敗しました。URLや共有設定を確認してください。")
     st.info("エラー詳細: " + str(e))
