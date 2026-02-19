@@ -110,7 +110,7 @@ try:
             {col: "{:,}" for col in filtered_df.columns if pd.api.types.is_numeric_dtype(filtered_df[col])}
         )
 
-        st.dataframe(styled_df, use_container_width=True)
+        st.dataframe(styled_df, use_container_width=True, hide_index=True)
 
     else:
         st.info("表示する列を少なくとも1つ選択してください。")
