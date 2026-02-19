@@ -62,9 +62,14 @@ try:
     if selected_columns:
         st.divider()
         # 絞り込みの対象にする列を選択
-        filter_cols = st.multiselect("２．絞り込み条件の設定", selected_columns)
+        filter_cols = st.multiselect("２．絞り込み条件の設定", all_columns)
         # フィルタリング前の準備
         filtered_df = df_stcok_list.copy()
+
+        # ETFは最初に除く
+        show_all = st.checkbox("ETFも表示する", value=False)
+        if not show_all and '33業種区分' in filtered_df.columns:
+            filtered_df = filtered_df[filtered_df["33業種区分"] != "-"]
 
         # 選ばれた各列に対して、動的にフィルタUIを生成
         for col in filter_cols:
@@ -72,11 +77,9 @@ try:
                 # 数値列の場合
                 if pd.api.types.is_numeric_dtype(df_stcok_list[col]):
                     col_min = float(df_stcok_list[col].min())
-                    col_max = float(df_stcok_list[col].max())
-                    
+                    col_max = float(df_stcok_list[col].max())                    
                     # 範囲スライダー
                     r = st.slider(f"{col} の範囲", col_min, col_max, (col_min, col_max), key=f"slider_{col}")
-                    
                     # フィルタ適用
                     filtered_df = filtered_df[(filtered_df[col] >= r[0]) & (filtered_df[col] <= r[1])]
                 
