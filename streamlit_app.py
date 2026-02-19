@@ -53,7 +53,7 @@ try:
     
     # 列選択用プルダウンリスト
     selected_columns = st.multiselect(
-        "表示したい列を選んでください",
+        "１．表示する列の設定",
         options=all_columns,
         default=available_default_cols
     )
@@ -65,36 +65,39 @@ try:
 #        st.warning("表示する列を1つ以上選択してください。")
 
     st.divider() # 区切り線
-    target_col = "現在値" # 絞り込みたい列名
+    st.subheader("２．絞り込み条件の設定")
+    # 絞り込みの対象にする列を選択
+    filter_col = st.selectbox("絞り込みたい列を選択してください", all_columns)
+    filtered_df = df_stcok_list.copy()
+    # --- 列の型に応じた動的なUI生成 ---
+        # 数値列の場合
+        if pd.api.types.is_numeric_dtype(df_stcok_list[filter_col]):
+            col1, col2 = st.columns(2)
+            min_limit = float(df_stcok_list[filter_col].min())
+            max_limit = float(df_stcok_list[filter_col].max())
+            
+            with col1:
+                lower = st.number_input(f"{filter_col} の最小値", value=min_limit)
+            with col2:
+                upper = st.number_input(f"{filter_col} の最大値", value=max_limit)
+            
+            # 数値でフィルタ
+            filtered_df = df_stcok_list[(df_stcok_list[filter_col] >= lower) & (df_stcok_list[filter_col] <= upper)]
 
-    if target_col in df_stcok_list.columns:
-        # データの型を数値に変換（エラーや空文字を考慮）
-        df_stcok_list[target_col] = pd.to_numeric(df_stcok_list[target_col], errors="coerce")
-        
-        # スライダーで範囲を指定（あるいは st.number_input でも可）
-        cols = st.columns(2)
-        with cols[0]:
-            start_range = st.number_input(f"{target_col} の最小値", value=1000)
-        with cols[1]:
-            end_range = st.number_input(f"{target_col} の最大値", value=5000.0)
-
-        # データのフィルタリング
-        filtered_df = df_stcok_list[
-            (df_stcok_list[target_col] >= start_range) & 
-            (df_stcok_list[target_col] <= end_range)
-        ]
-        
-        # 表示する列だけを抽出
-        if selected_columns:
-            display_df = filtered_df[selected_columns]
+        # 文字列（オブジェクト）列の場合
         else:
-            display_df = filtered_df
+            search_txt = st.text_input(f"{filter_col} に含まれるキーワードを入力")
+            if search_txt:
+                # 文字列でフィルタ（大文字小文字無視）
+                filtered_df = df_stcok_list[df_stcok_list[filter_col].astype(str).str.contains(search_txt, case=False, na=False)]
 
-        # --- 3. 結果の表示 ---
-        st.write(f"🔍 絞り込み結果: {len(display_df)} 件")
-        st.dataframe(display_df, use_container_width=True)
+        # --- 結果の表示 ---
+        st.divider()
+        st.write(f"📊 表示中の列: {', '.join(selected_columns)} | 該当件数: {len(filtered_df)}件")
+        st.dataframe(filtered_df[selected_columns], use_container_width=True)
+
     else:
-        st.error(f"'{target_col}' という列が見つかりません。")
+        st.info("表示する列を少なくとも1つ選択してください。")
 
 except Exception as e:
     st.error(f"データの読み込みに失敗しました。URLや共有設定を確認してください。")
