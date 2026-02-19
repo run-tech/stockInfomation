@@ -173,8 +173,8 @@ for i, country in enumerate(selected_countries):
 # GUI　ブラウザタイトル
 # =========================================================
 st.set_page_config(
-    page_title='StcokInfochecker',
-    page_icon=':chart:', # This is an emoji shortcode. Could be a URL too.
+    page_title="StcokInfochecker",
+    page_icon=":chart:",
 )
 
 # =========================================================
@@ -185,10 +185,22 @@ st.title(":chart: StockChecker")
 st.header(f"銘柄一覧", divider="gray")
 try:
     # データの読み込み
-    df = get_gd_file(FILE_STOCK_LIST)
-
-    # データの表示
-    st.dataframe(df) # インタラクティブな表として表示
+    df_stcok_list = get_gd_file(FILE_STOCK_LIST)
+    # 全ての列名を取得
+    all_columns = df_stcok_list.columns.tolist()
+    
+    # ユーザーに列を選ばせる
+    selected_columns = st.multiselect(
+        "表示したい列を選んでください",
+        options=all_columns,
+        default=all_columns[:10]
+    )
+    # 選択された列がある場合のみ表示
+    if selected_columns:
+        filtered_df = df_stcok_list[selected_columns]
+        st.dataframe(filtered_df, use_container_width=True)
+    else:
+        st.warning("表示する列を1つ以上選択してください。")
 
 except Exception as e:
     st.error(f"データの読み込みに失敗しました。URLや共有設定を確認してください。")
@@ -199,10 +211,10 @@ except Exception as e:
 st.header(f"出来高TOP100", divider="gray")
 try:
     # データの読み込み
-    df = get_gd_file(FILE_BAIBAIDAIKIN)
+    df_dekidaka = get_gd_file(FILE_BAIBAIDAIKIN)
 
     # データの表示
-    st.dataframe(df) # インタラクティブな表として表示
+    st.dataframe(df_dekidaka) # インタラクティブな表として表示
 
 except Exception as e:
     st.error(f"データの読み込みに失敗しました。URLや共有設定を確認してください。")
@@ -213,10 +225,10 @@ except Exception as e:
 st.header(f"売買代金TOP100", divider="gray")
 try:
     # データの読み込み
-    df = get_gd_file(FILE_DEKIDAKA)
+    df_baibaidaikin = get_gd_file(FILE_DEKIDAKA)
 
     # データの表示
-    st.dataframe(df) # インタラクティブな表として表示
+    st.dataframe(df_baibaidaikin) # インタラクティブな表として表示
 
 except Exception as e:
     st.error(f"データの読み込みに失敗しました。URLや共有設定を確認してください。")
