@@ -4,7 +4,7 @@ import requests
 import math
 from pathlib import Path
 
-FILE_ID = "1LC_UduTk_dcT7vgCoURbIiFXbmTt"
+FILE_ID = "12K-1LC_UduTk_dcT7vgCoURbIiFXbmTt" # https://drive.google.com/file/d/12K-1LC_UduTk_dcT7vgCoURbIiFXbmTt/view?usp=drive_link
 
 # Set the title and favicon that appear in the Browser's tab bar.
 st.set_page_config(
@@ -65,9 +65,8 @@ def get_gdp_data():
 # GoogleDocumentからCSV取得
 # =========================================================
 def get_gd_data(file_id):
-    FILE_ID = "1LC_UduTk_dcT7vgCoURbIiFXbmTt"
+    
     url = f"https://drive.google.com/uc?id={file_id}&export=download"
-
     # データを取得
     response = requests.get(url)
     
