@@ -122,7 +122,7 @@ try:
             col: st.column_config.NumberColumn(format="%d")
             for col in filtered_df.columns if pd.api.types.is_numeric_dtype(filtered_df[col])
         }
-        styled_df = filtered_df[selected_columns].style.applymap(color_negative_red).format(
+        styled_df = filtered_df[selected_columns].style.map(color_negative_red).format(
             {col: "{:,}" for col in filtered_df.columns if pd.api.types.is_numeric_dtype(filtered_df[col])}
         )
 
